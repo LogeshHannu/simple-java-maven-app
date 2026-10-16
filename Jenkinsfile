@@ -6,20 +6,20 @@ pipeline {
     }
 
     stages {
-        stage('Check Java and Maven') {
+        stage('Build') {
             steps {
-                sh '''
-                    echo "JAVA_HOME=$JAVA_HOME"
-                    java -version
-                    javac -version
-                    mvn -version
-                '''
+                sh 'mvn -B clean package -DskipTests'
             }
         }
 
-        stage('Build') {
+        stage('Test') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
             }
         }
     }
