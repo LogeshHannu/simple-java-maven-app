@@ -1,13 +1,24 @@
 pipeline {
     agent any
+
     tools {
-        // Use the Maven tool configured in Jenkins
         maven 'Maven'
     }
+
     stages {
+        stage('Check Java and Maven') {
+            steps {
+                sh '''
+                    echo "JAVA_HOME=$JAVA_HOME"
+                    java -version
+                    javac -version
+                    mvn -version
+                '''
+            }
+        }
+
         stage('Build') {
             steps {
-                // Compile and package, skipping tests for now
                 sh 'mvn -B -DskipTests clean package'
             }
         }
